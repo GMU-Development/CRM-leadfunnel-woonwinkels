@@ -54,7 +54,7 @@ export const StatsBar = ({ clientId }) => {
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+    <div className="grid grid-cols-2 gap-4 mb-6 w-full">
       <StatCard
         label="Totaal Leads"
         value={stats.totalLeads}
@@ -77,7 +77,7 @@ export const StatsBar = ({ clientId }) => {
 
 const StatCard = ({ label, value }) => {
   return (
-    <div className="card p-4">
+    <div className="card p-4 w-full">
       <div className="text-sm text-text-secondary mb-1">{label}</div>
       <div className="text-2xl font-semibold text-text-primary">{value}</div>
     </div>
