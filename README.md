@@ -11,23 +11,26 @@ Een minimalistische, strakke lead management CRM voor marketing bureaus. Beheer 
 - **Admin Panel**: Beheer klanten en voer ad spend in
 - **n8n Webhook**: Automatisch leads ontvangen via webhooks
 
-## Demo Data
+## Demo Accounts
 
-De applicatie bevat demo data voor:
-- **Demo Klant**: Bakkerij De Gouden Krakeling
+De applicatie is vooraf geconfigureerd met demo accounts:
+
+### Demo Klant Account
 - **Email**: jan@goudenkrakeling.nl
-- **10 Demo Leads** met verschillende statussen
+- **Wachtwoord**: Demo123!
+- Toegang tot: Dashboard met 10 demo leads voor Bakkerij De Gouden Krakeling
 
-Om in te loggen als demo klant, maak eerst een gebruiker aan via de Supabase dashboard of gebruik de admin functionaliteit.
+### Admin Account
+- **Email**: admin@leadflow.nl
+- **Wachtwoord**: Admin123!
+- Toegang tot: Admin panel om klanten te beheren en ad spend in te voeren
 
-## Admin Toegang
+## Inloggen
 
-Om admin toegang te krijgen, voeg je email toe aan de `admins` tabel in Supabase:
-
-```sql
-INSERT INTO admins (email, name, user_id)
-VALUES ('jouw@email.nl', 'Jouw Naam', (SELECT id FROM auth.users WHERE email = 'jouw@email.nl'));
-```
+1. Start de applicatie
+2. Ga naar de login pagina
+3. Log in met een van de demo accounts hierboven
+4. Begin met het beheren van leads!
 
 ## Lead Statussen
 

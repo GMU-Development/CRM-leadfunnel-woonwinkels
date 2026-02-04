@@ -45,7 +45,14 @@ function App() {
             }
           />
 
-          <Route path="/" element={<Navigate to="/dashboard" />} />
+          <Route
+            path="/"
+            element={
+              <ProtectedRoute>
+                <Navigate to="/dashboard" replace />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </Router>
     </AuthProvider>
