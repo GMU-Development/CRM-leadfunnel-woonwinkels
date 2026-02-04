@@ -41,7 +41,7 @@ export const StatsBar = ({ clientId, refreshTrigger }) => {
       .eq('month', `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-01`)
 
     const totalSpend = adSpend?.reduce((sum, item) => sum + parseFloat(item.spend), 0) || 0
-    const costPerLead = monthLeadsCount > 0 ? totalSpend / monthLeadsCount : 0
+    const costPerLead = 40
 
     const customerLeads = allLeads?.filter(lead => lead.status === 'klant') || []
     const conversionRate = allLeads?.length > 0 ? (customerLeads.length / allLeads.length) * 100 : 0
