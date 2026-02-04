@@ -26,7 +26,7 @@ export const Modal = ({ isOpen, onClose, title, children, size = 'md' }) => {
       <div className="flex min-h-screen items-center justify-center p-4">
         <div className="fixed inset-0 bg-black bg-opacity-30 transition-opacity" onClick={onClose} />
 
-        <div className={`relative bg-white rounded-card shadow-xl ${sizes[size]} w-full max-h-[90vh] overflow-hidden flex flex-col`}>
+        <div className={`relative z-10 bg-white rounded-card shadow-xl ${sizes[size]} w-full max-h-[90vh] overflow-hidden flex flex-col`}>
           <div className="flex items-center justify-between p-6 border-b border-gray-200">
             <h2 className="text-xl font-semibold text-text-primary">{title}</h2>
             <button
