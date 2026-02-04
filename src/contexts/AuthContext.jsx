@@ -44,11 +44,27 @@ export const AuthProvider = ({ children }) => {
   }, [])
 
   const checkUserRole = async (user) => {
-    const { data: adminData } = await supabase
+    let { data: adminData } = await supabase
       .from('admins')
       .select('*')
       .eq('user_id', user.id)
       .maybeSingle()
+
+    if (!adminData) {
+      const { data: adminByEmail } = await supabase
+        .from('admins')
+        .select('*')
+        .eq('email', user.email)
+        .maybeSingle()
+
+      if (adminByEmail && !adminByEmail.user_id) {
+        await supabase
+          .from('admins')
+          .update({ user_id: user.id })
+          .eq('id', adminByEmail.id)
+        adminData = { ...adminByEmail, user_id: user.id }
+      }
+    }
 
     if (adminData) {
       setIsAdmin(true)
@@ -73,6 +89,14 @@ export const AuthProvider = ({ children }) => {
     return { data, error }
   }
 
+  const signUp = async (email, password) => {
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+    })
+    return { data, error }
+  }
+
   const signOut = async () => {
     const { error } = await supabase.auth.signOut()
     setIsAdmin(false)
@@ -86,6 +110,7 @@ export const AuthProvider = ({ children }) => {
     isAdmin,
     clientData,
     signIn,
+    signUp,
     signOut,
   }
 

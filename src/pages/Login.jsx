@@ -8,22 +8,36 @@ export const Login = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
+  const [success, setSuccess] = useState('')
   const [loading, setLoading] = useState(false)
-  const { signIn } = useAuth()
+  const [isRegistering, setIsRegistering] = useState(false)
+  const { signIn, signUp } = useAuth()
   const navigate = useNavigate()
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError('')
+    setSuccess('')
     setLoading(true)
 
-    const { error } = await signIn(email, password)
-
-    if (error) {
-      setError('Onjuiste inloggegevens')
-      setLoading(false)
+    if (isRegistering) {
+      const { error } = await signUp(email, password)
+      if (error) {
+        setError(error.message || 'Registratie mislukt')
+        setLoading(false)
+      } else {
+        setSuccess('Account aangemaakt! Je kunt nu inloggen.')
+        setIsRegistering(false)
+        setLoading(false)
+      }
     } else {
-      navigate('/dashboard')
+      const { error } = await signIn(email, password)
+      if (error) {
+        setError('Onjuiste inloggegevens')
+        setLoading(false)
+      } else {
+        navigate('/dashboard')
+      }
     }
   }
 
@@ -61,19 +75,42 @@ export const Login = () => {
               </div>
             )}
 
+            {success && (
+              <div className="text-sm text-green-600 bg-green-50 p-3 rounded-button">
+                {success}
+              </div>
+            )}
+
             <Button
               type="submit"
               disabled={loading}
               className="w-full"
             >
-              {loading ? 'Inloggen...' : 'Inloggen'}
+              {loading
+                ? (isRegistering ? 'Registreren...' : 'Inloggen...')
+                : (isRegistering ? 'Registreren' : 'Inloggen')}
             </Button>
           </form>
 
-          <div className="mt-6 text-center">
-            <a href="#" className="text-sm text-text-secondary hover:text-text-primary transition-colors">
-              Wachtwoord vergeten?
-            </a>
+          <div className="mt-6 text-center space-y-2">
+            <button
+              type="button"
+              onClick={() => {
+                setIsRegistering(!isRegistering)
+                setError('')
+                setSuccess('')
+              }}
+              className="text-sm text-primary hover:text-primary-hover transition-colors"
+            >
+              {isRegistering ? 'Heb je al een account? Inloggen' : 'Nog geen account? Registreren'}
+            </button>
+            {!isRegistering && (
+              <div>
+                <a href="#" className="text-sm text-text-secondary hover:text-text-primary transition-colors">
+                  Wachtwoord vergeten?
+                </a>
+              </div>
+            )}
           </div>
         </div>
       </div>
