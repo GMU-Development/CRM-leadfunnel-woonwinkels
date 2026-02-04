@@ -91,7 +91,7 @@ export const KanbanBoard = ({ clientId, onLeadClick, refreshTrigger }) => {
       onDragEnd={handleDragEnd}
     >
       <div className="overflow-x-auto pb-4">
-        <div className="flex gap-4 min-w-max">
+        <div className="flex gap-2 min-w-max">
           {LEAD_STATUSES.map(status => (
             <KanbanColumn
               key={status.id}
