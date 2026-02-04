@@ -1,113 +1,74 @@
 # Setup Instructies LeadFlow Mini-CRM
 
-## Stap 1: Demo Gebruiker Aanmaken
+## Inloggegevens
 
-Om in te loggen als de demo klant, moet je eerst een gebruiker aanmaken in Supabase:
+De demo gebruikers zijn automatisch aangemaakt. Je kunt direct inloggen:
 
-### Optie A: Via Supabase Dashboard (Aanbevolen)
+### Klant Account
+- Email: `jan@goudenkrakeling.nl`
+- Wachtwoord: `Demo123!`
 
-1. Ga naar je Supabase dashboard
-2. Navigeer naar Authentication > Users
-3. Klik op "Add user" > "Create new user"
-4. Vul in:
-   - Email: `jan@goudenkrakeling.nl`
-   - Wachtwoord: kies een wachtwoord (bijv. `Demo123456`)
-   - Auto Confirm User: Ja (vink aan)
-5. Klik op "Create user"
+### Admin Account
+- Email: `admin@leadflow.nl`
+- Wachtwoord: `Admin123!`
 
-### Optie B: Via SQL
-
-Voer dit uit in de Supabase SQL Editor:
-
-```sql
--- Maak een auth user aan voor de demo klant
--- LET OP: Vervang 'Demo123456' met je gewenste wachtwoord
-INSERT INTO auth.users (
-  instance_id,
-  id,
-  aud,
-  role,
-  email,
-  encrypted_password,
-  email_confirmed_at,
-  created_at,
-  updated_at,
-  confirmation_token,
-  raw_user_meta_data
-)
-VALUES (
-  '00000000-0000-0000-0000-000000000000',
-  gen_random_uuid(),
-  'authenticated',
-  'authenticated',
-  'jan@goudenkrakeling.nl',
-  crypt('Demo123456', gen_salt('bf')),
-  NOW(),
-  NOW(),
-  NOW(),
-  '',
-  '{}'::jsonb
-);
-```
-
-## Stap 2: Inloggen
+## Development
 
 1. Start de applicatie: `npm run dev`
 2. Ga naar de login pagina
-3. Log in met:
-   - Email: `jan@goudenkrakeling.nl`
-   - Wachtwoord: het wachtwoord dat je hebt ingesteld
+3. Log in met bovenstaande gegevens
 
-Je ziet nu het dashboard met 10 demo leads in verschillende statussen!
+## Productie Deployment
 
-## Stap 3: Admin Gebruiker Aanmaken (Optioneel)
+### Stap 1: Omgevingsvariabelen instellen
 
-Om toegang te krijgen tot het admin panel:
+Bij je hosting provider (Vercel, Netlify, etc.) moeten deze omgevingsvariabelen worden ingesteld:
 
-1. Maak eerst een gebruiker aan via Supabase Dashboard (zoals hierboven)
-2. Voeg je gebruiker toe aan de admins tabel:
-
-```sql
-INSERT INTO admins (email, name, user_id)
-VALUES (
-  'jouw@email.nl',
-  'Jouw Naam',
-  (SELECT id FROM auth.users WHERE email = 'jouw@email.nl')
-);
+```
+VITE_SUPABASE_URL=https://yjigujqdljckaxkrjhhj.supabase.co
+VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlqaWd1anFkbGpja2F4a3JqaGhqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAyMDg1MjUsImV4cCI6MjA4NTc4NDUyNX0.6CS2y6wOUp3lGlLwyKrGDyCgVyB5722Kcz5fyOZ667Y
 ```
 
-3. Log in met je email en je hebt nu toegang tot `/admin`
+### Stap 2: Supabase URL Configuratie
 
-## Demo Features
+In het Supabase Dashboard:
+1. Ga naar Authentication > URL Configuration
+2. Stel de "Site URL" in op je productie URL
+3. Voeg je productie URL toe aan "Redirect URLs"
+
+### Stap 3: Build en Deploy
+
+```bash
+npm run build
+```
+
+De `dist` folder bevat de productie build.
+
+## Features
 
 ### Als Klant (jan@goudenkrakeling.nl):
-- ✅ Bekijk 10 demo leads in Kanban bord
-- ✅ Drag & drop leads tussen statussen
-- ✅ Klik op lead voor details
-- ✅ Voeg notities toe (sommige leads hebben al notities)
-- ✅ Voeg taken toe
-- ✅ Bekijk activiteit log
-- ✅ Zie statistieken (totaal leads, CPL, conversie)
+- Bekijk leads in Kanban bord
+- Drag & drop leads tussen statussen
+- Klik op lead voor details
+- Voeg notities en taken toe
+- Bekijk activiteit log
+- Zie statistieken
 
-### Als Admin:
-- ✅ Bekijk alle klanten met statistieken
-- ✅ Maak nieuwe klanten aan
-- ✅ Activeer/deactiveer klanten
-- ✅ Bekijk klant dashboard
-- ✅ Voer ad spend in per maand/platform
+### Als Admin (admin@leadflow.nl):
+- Bekijk alle klanten met statistieken
+- Maak nieuwe klanten aan
+- Activeer/deactiveer klanten
+- Bekijk klant dashboard
+- Voer ad spend in per maand/platform
 
 ## Troubleshooting
 
-### Kan niet inloggen met demo account
-- Zorg dat je de gebruiker hebt aangemaakt in Supabase Auth
-- Check of het email adres exact `jan@goudenkrakeling.nl` is
-- Check of de gebruiker is bevestigd (email_confirmed_at is ingevuld)
+### Kan niet inloggen in productie
+- Controleer of de omgevingsvariabelen correct zijn ingesteld
+- Herdeployeer na het instellen van omgevingsvariabelen
+- Controleer de browser console voor errors
 
-### Zie geen leads
-- Check of de demo data is geladen (zie migrations)
+### Zie geen data
 - Ververs de pagina
 - Check de browser console voor errors
-
-### Admin panel niet zichtbaar
-- Zorg dat je email is toegevoegd aan de `admins` tabel
-- Log opnieuw in na het toevoegen aan de admins tabel
+- Controleer of de Supabase URL bereikbaar is
