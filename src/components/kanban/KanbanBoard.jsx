@@ -5,7 +5,7 @@ import { LEAD_STATUSES } from '../../lib/constants'
 import { KanbanColumn } from './KanbanColumn'
 import { LeadCard } from './LeadCard'
 
-export const KanbanBoard = ({ clientId, onLeadClick, refreshTrigger }) => {
+export const KanbanBoard = ({ clientId, onLeadClick, refreshTrigger, onStatusChange }) => {
   const [leads, setLeads] = useState([])
   const [activeId, setActiveId] = useState(null)
 
@@ -82,6 +82,7 @@ export const KanbanBoard = ({ clientId, onLeadClick, refreshTrigger }) => {
         new_value: newStatus,
         description: `Status gewijzigd van ${LEAD_STATUSES.find(s => s.id === lead.status)?.label} naar ${LEAD_STATUSES.find(s => s.id === newStatus)?.label}`,
       })
+      onStatusChange?.()
     } else {
       fetchLeads()
     }

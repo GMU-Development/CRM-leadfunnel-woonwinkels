@@ -61,11 +61,12 @@ export const Dashboard = () => {
       <Header logoUrl={clientData.logo_url} companyName={clientData.company_name} />
 
       <main className="px-4 sm:px-6 lg:px-8 py-8">
-        <StatsBar clientId={clientData.id} />
+        <StatsBar clientId={clientData.id} refreshTrigger={refreshTrigger} />
         <KanbanBoard
           clientId={clientData.id}
           onLeadClick={handleLeadClick}
           refreshTrigger={refreshTrigger}
+          onStatusChange={() => setRefreshTrigger(prev => prev + 1)}
         />
       </main>
 

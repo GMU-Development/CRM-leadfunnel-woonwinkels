@@ -3,7 +3,7 @@ import { supabase } from '../../lib/supabase'
 import { formatCurrency } from '../../utils/helpers'
 import { useAuth } from '../../contexts/AuthContext'
 
-export const StatsBar = ({ clientId }) => {
+export const StatsBar = ({ clientId, refreshTrigger }) => {
   const [stats, setStats] = useState({
     totalLeads: 0,
     leadsThisMonth: 0,
@@ -15,7 +15,7 @@ export const StatsBar = ({ clientId }) => {
     if (clientId) {
       fetchStats()
     }
-  }, [clientId])
+  }, [clientId, refreshTrigger])
 
   const fetchStats = async () => {
     const now = new Date()
