@@ -54,7 +54,7 @@ export const AuthProvider = ({ children }) => {
       const { data: adminByEmail } = await supabase
         .from('admins')
         .select('*')
-        .eq('email', user.email)
+        .ilike('email', user.email)
         .maybeSingle()
 
       if (adminByEmail && !adminByEmail.user_id) {
@@ -74,7 +74,7 @@ export const AuthProvider = ({ children }) => {
       const { data: client } = await supabase
         .from('clients')
         .select('*')
-        .eq('email', user.email)
+        .ilike('email', user.email)
         .maybeSingle()
 
       setClientData(client)
