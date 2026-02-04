@@ -1,12 +1,9 @@
 import { Badge } from '../ui/Badge'
 import { formatRelativeTime } from '../../utils/helpers'
 
-export const LeadCard = ({ lead, onClick }) => {
+export const LeadCard = ({ lead }) => {
   return (
-    <div
-      onClick={onClick}
-      className="card-hover p-3 mb-2"
-    >
+    <div className="card-hover p-3 mb-2">
       <div className="mb-2">
         <h3 className="font-semibold text-text-primary text-sm mb-0.5">{lead.name}</h3>
         {lead.company_name && (
