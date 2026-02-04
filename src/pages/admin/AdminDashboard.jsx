@@ -42,7 +42,7 @@ export const AdminDashboard = () => {
             .eq('month', `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-01`)
 
           const totalSpend = adSpend?.reduce((sum, item) => sum + parseFloat(item.spend), 0) || 0
-          const cpl = monthLeads.length > 0 ? totalSpend / monthLeads.length : 0
+          const cpl = 40
 
           const customerLeads = leads?.filter(lead => lead.status === 'klant') || []
           const conversionRate = leads?.length > 0 ? (customerLeads.length / leads.length) * 100 : 0
