@@ -18,35 +18,37 @@ export const AuthProvider = ({ children }) => {
   const [clientData, setClientData] = useState(null)
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      (async () => {
-        try {
-          setUser(session?.user ?? null)
-          if (session?.user) {
-            await checkUserRole(session.user)
-          }
-        } catch (error) {
-          console.error('Error checking user role:', error)
-        } finally {
-          setLoading(false)
+    // Get initial session
+    const initializeAuth = async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession()
+        setUser(session?.user ?? null)
+        if (session?.user) {
+          await checkUserRole(session.user)
         }
-      })()
-    })
+      } catch (error) {
+        console.error('Error initializing auth:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
 
+    initializeAuth()
+
+    // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      (async () => {
-        try {
-          setUser(session?.user ?? null)
-          if (session?.user) {
-            await checkUserRole(session.user)
-          } else {
-            setIsAdmin(false)
-            setClientData(null)
-          }
-        } catch (error) {
-          console.error('Error on auth state change:', error)
-        }
-      })()
+      // Use async IIFE to avoid deadlock
+      setUser(session?.user ?? null)
+
+      if (session?.user) {
+        // Run role check asynchronously without blocking
+        checkUserRole(session.user).catch(error => {
+          console.error('Error checking user role:', error)
+        })
+      } else {
+        setIsAdmin(false)
+        setClientData(null)
+      }
     })
 
     return () => subscription.unsubscribe()
