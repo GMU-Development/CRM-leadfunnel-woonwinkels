@@ -16,6 +16,7 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true)
   const [isAdmin, setIsAdmin] = useState(false)
   const [clientData, setClientData] = useState(null)
+  const [roleChecked, setRoleChecked] = useState(false)
 
   useEffect(() => {
     // Get initial session
@@ -48,6 +49,7 @@ export const AuthProvider = ({ children }) => {
       } else {
         setIsAdmin(false)
         setClientData(null)
+        setRoleChecked(true)
       }
     })
 
@@ -55,6 +57,8 @@ export const AuthProvider = ({ children }) => {
   }, [])
 
   const checkUserRole = async (user) => {
+    setRoleChecked(false)
+
     let { data: adminData, error: adminError } = await supabase
       .from('admins')
       .select('*')
@@ -108,6 +112,8 @@ export const AuthProvider = ({ children }) => {
 
       setClientData(client)
     }
+
+    setRoleChecked(true)
   }
 
   const signIn = async (email, password) => {
@@ -130,6 +136,7 @@ export const AuthProvider = ({ children }) => {
     const { error } = await supabase.auth.signOut()
     setIsAdmin(false)
     setClientData(null)
+    setRoleChecked(false)
     return { error }
   }
 
@@ -138,6 +145,7 @@ export const AuthProvider = ({ children }) => {
     loading,
     isAdmin,
     clientData,
+    roleChecked,
     signIn,
     signUp,
     signOut,

@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Navigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { Header } from '../components/dashboard/Header'
 import { StatsBar } from '../components/dashboard/StatsBar'
@@ -8,7 +9,7 @@ import { supabase } from '../lib/supabase'
 import { LEAD_STATUSES } from '../lib/constants'
 
 export const Dashboard = () => {
-  const { clientData } = useAuth()
+  const { clientData, isAdmin, roleChecked } = useAuth()
   const [selectedLead, setSelectedLead] = useState(null)
   const [refreshTrigger, setRefreshTrigger] = useState(0)
 
@@ -48,10 +49,27 @@ export const Dashboard = () => {
     setRefreshTrigger(prev => prev + 1)
   }
 
-  if (!clientData) {
+  if (isAdmin) {
+    return <Navigate to="/admin" replace />
+  }
+
+  if (!roleChecked) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-text-secondary">Laden...</div>
+      </div>
+    )
+  }
+
+  if (!clientData) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-text-secondary mb-2">Geen klantprofiel gevonden</div>
+          <div className="text-sm text-gray-400">
+            Neem contact op met de beheerder om toegang te krijgen.
+          </div>
+        </div>
       </div>
     )
   }

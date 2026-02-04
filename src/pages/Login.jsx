@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { Input } from '../components/ui/Input'
@@ -11,8 +11,19 @@ export const Login = () => {
   const [success, setSuccess] = useState('')
   const [loading, setLoading] = useState(false)
   const [isRegistering, setIsRegistering] = useState(false)
-  const { signIn, signUp } = useAuth()
+  const [waitingForRole, setWaitingForRole] = useState(false)
+  const { signIn, signUp, user, isAdmin, roleChecked } = useAuth()
   const navigate = useNavigate()
+
+  useEffect(() => {
+    if (waitingForRole && user && roleChecked) {
+      if (isAdmin) {
+        navigate('/admin')
+      } else {
+        navigate('/dashboard')
+      }
+    }
+  }, [waitingForRole, user, isAdmin, roleChecked, navigate])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -36,7 +47,7 @@ export const Login = () => {
         setError('Onjuiste inloggegevens')
         setLoading(false)
       } else {
-        navigate('/dashboard')
+        setWaitingForRole(true)
       }
     }
   }
