@@ -20,22 +20,31 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       (async () => {
-        setUser(session?.user ?? null)
-        if (session?.user) {
-          await checkUserRole(session.user)
+        try {
+          setUser(session?.user ?? null)
+          if (session?.user) {
+            await checkUserRole(session.user)
+          }
+        } catch (error) {
+          console.error('Error checking user role:', error)
+        } finally {
+          setLoading(false)
         }
-        setLoading(false)
       })()
     })
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       (async () => {
-        setUser(session?.user ?? null)
-        if (session?.user) {
-          await checkUserRole(session.user)
-        } else {
-          setIsAdmin(false)
-          setClientData(null)
+        try {
+          setUser(session?.user ?? null)
+          if (session?.user) {
+            await checkUserRole(session.user)
+          } else {
+            setIsAdmin(false)
+            setClientData(null)
+          }
+        } catch (error) {
+          console.error('Error on auth state change:', error)
         }
       })()
     })
@@ -44,25 +53,39 @@ export const AuthProvider = ({ children }) => {
   }, [])
 
   const checkUserRole = async (user) => {
-    let { data: adminData } = await supabase
+    let { data: adminData, error: adminError } = await supabase
       .from('admins')
       .select('*')
       .eq('user_id', user.id)
       .maybeSingle()
 
+    if (adminError) {
+      console.error('Error fetching admin by user_id:', adminError)
+    }
+
     if (!adminData) {
-      const { data: adminByEmail } = await supabase
+      const { data: adminByEmail, error: emailError } = await supabase
         .from('admins')
         .select('*')
         .ilike('email', user.email)
         .maybeSingle()
 
+      if (emailError) {
+        console.error('Error fetching admin by email:', emailError)
+      }
+
       if (adminByEmail && !adminByEmail.user_id) {
-        await supabase
+        const { error: updateError } = await supabase
           .from('admins')
           .update({ user_id: user.id })
           .eq('id', adminByEmail.id)
+
+        if (updateError) {
+          console.error('Error linking admin account:', updateError)
+        }
         adminData = { ...adminByEmail, user_id: user.id }
+      } else if (adminByEmail) {
+        adminData = adminByEmail
       }
     }
 
@@ -71,11 +94,15 @@ export const AuthProvider = ({ children }) => {
       setClientData(null)
     } else {
       setIsAdmin(false)
-      const { data: client } = await supabase
+      const { data: client, error: clientError } = await supabase
         .from('clients')
         .select('*')
         .ilike('email', user.email)
         .maybeSingle()
+
+      if (clientError) {
+        console.error('Error fetching client data:', clientError)
+      }
 
       setClientData(client)
     }
