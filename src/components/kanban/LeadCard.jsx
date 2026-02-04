@@ -1,5 +1,5 @@
 import { Badge } from '../ui/Badge'
-import { formatRelativeTime } from '../../utils/helpers'
+import { formatRelativeTime, formatCurrency } from '../../utils/helpers'
 
 export const LeadCard = ({ lead }) => {
   return (
@@ -8,6 +8,9 @@ export const LeadCard = ({ lead }) => {
         <h3 className="font-semibold text-text-primary text-sm mb-0.5">{lead.name}</h3>
         {lead.company_name && (
           <p className="text-xs text-text-secondary">{lead.company_name}</p>
+        )}
+        {lead.budget && (
+          <p className="text-xs font-medium text-green-600 mt-1">{formatCurrency(lead.budget)}</p>
         )}
       </div>
 

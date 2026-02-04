@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Input } from '../ui/Input'
-import { formatDate } from '../../utils/helpers'
+import { formatDate, formatCurrency } from '../../utils/helpers'
 import { supabase } from '../../lib/supabase'
 
 export const LeadInfo = ({ lead, onUpdate }) => {
@@ -61,6 +61,13 @@ export const LeadInfo = ({ lead, onUpdate }) => {
           <div className="text-sm text-text-secondary mb-1">Datum binnenkomst</div>
           <div className="text-text-primary">{formatDate(lead.created_at)}</div>
         </div>
+
+        {lead.budget && (
+          <div>
+            <div className="text-sm text-text-secondary mb-1">Budget</div>
+            <div className="text-text-primary font-medium text-green-600">{formatCurrency(lead.budget)}</div>
+          </div>
+        )}
       </div>
 
       <div className="border-t border-gray-200 pt-6">
