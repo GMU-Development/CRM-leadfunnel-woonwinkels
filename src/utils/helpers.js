@@ -25,7 +25,7 @@ export const formatCurrency = (amount) => {
 }
 
 export const formatDate = (date) => {
-  return new Intl.DateFormat('nl-NL').format(new Date(date))
+  return new Intl.DateTimeFormat('nl-NL').format(new Date(date))
 }
 
 export const getStatusColor = (statusId) => {
