@@ -46,7 +46,17 @@ export const KanbanBoard = ({ clientId, onLeadClick, refreshTrigger }) => {
     if (!over) return
 
     const leadId = active.id
-    const newStatus = over.id
+    let newStatus = over.id
+
+    const isValidStatus = LEAD_STATUSES.some(s => s.id === newStatus)
+    if (!isValidStatus) {
+      const targetLead = leads.find(l => l.id === over.id)
+      if (targetLead) {
+        newStatus = targetLead.status
+      } else {
+        return
+      }
+    }
 
     const lead = leads.find(l => l.id === leadId)
     if (!lead || lead.status === newStatus) return

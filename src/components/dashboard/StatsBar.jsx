@@ -32,15 +32,7 @@ export const StatsBar = ({ clientId }) => {
       .eq('client_id', clientId)
       .gte('created_at', firstDayOfMonth.toISOString())
 
-    const { data: adSpend } = await supabase
-      .from('monthly_ad_spend')
-      .select('spend')
-      .eq('client_id', clientId)
-      .eq('month', `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-01`)
-
-    const totalSpend = adSpend?.reduce((sum, item) => sum + parseFloat(item.spend), 0) || 0
     const monthLeadsCount = monthLeads?.length || 0
-    const cpl = monthLeadsCount > 0 ? totalSpend / monthLeadsCount : 0
 
     const customerLeads = allLeads?.filter(lead => lead.status === 'klant') || []
     const conversionRate = allLeads?.length > 0 ? (customerLeads.length / allLeads.length) * 100 : 0
@@ -48,7 +40,7 @@ export const StatsBar = ({ clientId }) => {
     setStats({
       totalLeads: allLeads?.length || 0,
       leadsThisMonth: monthLeadsCount,
-      costPerLead: cpl,
+      costPerLead: 40,
       conversionRate: conversionRate,
     })
   }
